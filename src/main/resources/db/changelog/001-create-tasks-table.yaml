@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001
+      author: student
+      changes:
+        - createTable:
+            tableName: tasks
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+
+              - column:
+                  name: deadline
+                  type: DATE
+
+              - column:
+                  name: priority
+                  type: INT
