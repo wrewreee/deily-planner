@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-create-categories
+      author: student
+      changes:
+        - createTable:
+            tableName: categories
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: color
+                  type: VARCHAR(20)
+              - column:
+                  name: user_id
+                  type: BIGINT
+
+        - addForeignKeyConstraint:
+            baseTableName: categories
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_categories_user

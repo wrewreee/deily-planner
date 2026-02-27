@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 001
+      id: 004-create-tasks
       author: student
       changes:
         - createTable:
@@ -16,6 +16,12 @@ databaseChangeLog:
               - column:
                   name: title
                   type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: TEXT
 
               - column:
                   name: deadline
@@ -24,3 +30,48 @@ databaseChangeLog:
               - column:
                   name: priority
                   type: INT
+
+              - column:
+                  name: estimated_minutes
+                  type: INT
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: user_id
+                  type: BIGINT
+
+              - column:
+                  name: status_id
+                  type: BIGINT
+
+              - column:
+                  name: category_id
+                  type: BIGINT
+
+        - addForeignKeyConstraint:
+            baseTableName: tasks
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_tasks_user
+
+        - addForeignKeyConstraint:
+            baseTableName: tasks
+            baseColumnNames: status_id
+            referencedTableName: task_status
+            referencedColumnNames: id
+            constraintName: fk_tasks_status
+
+        - addForeignKeyConstraint:
+            baseTableName: tasks
+            baseColumnNames: category_id
+            referencedTableName: categories
+            referencedColumnNames: id
+            constraintName: fk_tasks_category
