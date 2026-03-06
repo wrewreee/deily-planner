@@ -1,7 +1,5 @@
 databaseChangeLog:
   - include:
-      file: db/changelog/001-create-tasks-table.yaml
-  - include:
       file: db/changelog/002-create-users-table.yaml
   - include:
       file: db/changelog/003-create-task-status-table.yaml
@@ -9,5 +7,7 @@ databaseChangeLog:
       file: db/changelog/004-create-categories-table.yaml
   - include:
       file: db/changelog/005-create-tags-table.yaml
+  - include:
+      file: db/changelog/001-create-tasks-table.yaml
   - include:
       file: db/changelog/006-create-task-tags-table.yaml

@@ -8,14 +8,21 @@ databaseChangeLog:
             columns:
               - column:
                   name: task_id
-                  type: BIGINT
+                  type: UUID
+                  defaultValueComputed: RANDOM_UUID()
+                  constraints:
+                    nullable: false
+
               - column:
                   name: tag_id
-                  type: BIGINT
+                  type: UUID
+                  defaultValueComputed: RANDOM_UUID()
+                  constraints:
+                    nullable: false
 
         - addPrimaryKey:
-            columnNames: task_id, tag_id
             tableName: task_tags
+            columnNames: task_id, tag_id
             constraintName: pk_task_tags
 
         - addForeignKeyConstraint:

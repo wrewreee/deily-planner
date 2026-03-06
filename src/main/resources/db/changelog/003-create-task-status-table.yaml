@@ -8,16 +8,24 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGINT
-                  autoIncrement: true
+                  type: UUID
+                  defaultValueComputed: RANDOM_UUID()
                   constraints:
                     primaryKey: true
+                    nullable: false
               - column:
                   name: name
                   type: VARCHAR(50)
                   constraints:
                     nullable: false
                     unique: true
+
+        - createIndex:
+            tableName: task_status
+            indexName: idx_status_name
+            columns:
+              - column:
+                  name: name
 
         - insert:
             tableName: task_status

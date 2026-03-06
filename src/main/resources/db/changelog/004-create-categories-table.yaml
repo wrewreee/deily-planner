@@ -8,10 +8,11 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGINT
-                  autoIncrement: true
+                  type: UUID
+                  defaultValueComputed: RANDOM_UUID()
                   constraints:
                     primaryKey: true
+                    nullable: false
               - column:
                   name: name
                   type: VARCHAR(100)
@@ -22,7 +23,14 @@ databaseChangeLog:
                   type: VARCHAR(20)
               - column:
                   name: user_id
-                  type: BIGINT
+                  type: UUID
+
+        - createIndex:
+            tableName: categories
+            indexName: idx_categories_name
+            columns:
+              - column:
+                  name: name
 
         - addForeignKeyConstraint:
             baseTableName: categories

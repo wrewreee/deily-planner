@@ -8,13 +8,21 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGINT
-                  autoIncrement: true
+                  type: UUID
+                  defaultValueComputed: RANDOM_UUID()
                   constraints:
                     primaryKey: true
+                    nullable: false
               - column:
                   name: name
                   type: VARCHAR(100)
                   constraints:
                     nullable: false
                     unique: true
+
+        - createIndex:
+            tableName: tags
+            indexName: idx_tags_name
+            columns:
+              - column:
+                  name: name

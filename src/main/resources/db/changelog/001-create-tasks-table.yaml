@@ -8,11 +8,11 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGINT
-                  autoIncrement: true
+                  type: UUID
+                  defaultValueComputed: RANDOM_UUID()
                   constraints:
                     primaryKey: true
-
+                    nullable: false
               - column:
                   name: title
                   type: VARCHAR(255)
@@ -45,15 +45,17 @@ databaseChangeLog:
 
               - column:
                   name: user_id
-                  type: BIGINT
+                  type: UUID
 
               - column:
                   name: status_id
-                  type: BIGINT
+                  type: UUID
+#                  type: BIGINT
 
               - column:
                   name: category_id
-                  type: BIGINT
+                  type: UUID
+#                  type: BIGINT
 
         - addForeignKeyConstraint:
             baseTableName: tasks

@@ -8,10 +8,11 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGINT
-                  autoIncrement: true
+                  type: UUID
+                  defaultValueComputed: RANDOM_UUID()
                   constraints:
                     primaryKey: true
+                    nullable: false
               - column:
                   name: username
                   type: VARCHAR(100)
@@ -32,3 +33,10 @@ databaseChangeLog:
               - column:
                   name: created_at
                   type: TIMESTAMP
+
+        - createIndex:
+            tableName: users
+            indexName: idx_users_name
+            columns:
+              - column:
+                  name: username
