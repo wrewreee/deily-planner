@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-create-task-status
+      author: student
+      changes:
+        - createTable:
+            tableName: task_status
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: RANDOM_UUID()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+        - createIndex:
+            tableName: task_status
+            indexName: idx_status_name
+            columns:
+              - column:
+                  name: name
+
+        - insert:
+            tableName: task_status
+            columns:
+              - column: { name: name, value: NEW }
+        - insert:
+            tableName: task_status
+            columns:
+              - column: { name: name, value: IN_PROGRESS }
+        - insert:
+            tableName: task_status
+            columns:
+              - column: { name: name, value: DONE }
+        - insert:
+            tableName: task_status
+            columns:
+              - column: { name: name, value: OVERDUE }
