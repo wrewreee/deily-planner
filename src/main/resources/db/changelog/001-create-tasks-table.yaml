@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 001
+      id: 004-create-tasks
       author: student
       changes:
         - createTable:
@@ -8,14 +8,20 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: BIGINT
-                  autoIncrement: true
+                  type: UUID
+                  defaultValueComputed: RANDOM_UUID()
                   constraints:
                     primaryKey: true
-
+                    nullable: false
               - column:
                   name: title
                   type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: TEXT
 
               - column:
                   name: deadline
@@ -24,3 +30,50 @@ databaseChangeLog:
               - column:
                   name: priority
                   type: INT
+
+              - column:
+                  name: estimated_minutes
+                  type: INT
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: user_id
+                  type: UUID
+
+              - column:
+                  name: status_id
+                  type: UUID
+#                  type: BIGINT
+
+              - column:
+                  name: category_id
+                  type: UUID
+#                  type: BIGINT
+
+        - addForeignKeyConstraint:
+            baseTableName: tasks
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_tasks_user
+
+        - addForeignKeyConstraint:
+            baseTableName: tasks
+            baseColumnNames: status_id
+            referencedTableName: task_status
+            referencedColumnNames: id
+            constraintName: fk_tasks_status
+
+        - addForeignKeyConstraint:
+            baseTableName: tasks
+            baseColumnNames: category_id
+            referencedTableName: categories
+            referencedColumnNames: id
+            constraintName: fk_tasks_category
