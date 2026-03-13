@@ -11,3 +11,5 @@ databaseChangeLog:
       file: db/changelog/001-create-tasks-table.yaml
   - include:
       file: db/changelog/006-create-task-tags-table.yaml
+  - include:
+      file: db/changelog/007-insert-initial-data.yaml

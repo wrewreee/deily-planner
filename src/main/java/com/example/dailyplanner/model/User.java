@@ -36,4 +36,9 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Category> categories;
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }
