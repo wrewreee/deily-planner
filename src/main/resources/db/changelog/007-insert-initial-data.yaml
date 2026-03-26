@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007
+      author: student
+      changes:
+
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  valueComputed: RANDOM_UUID()
+              - column:
+                  name: username
+                  value: test_user
+              - column:
+                  name: email
+                  value: test@example.com
+              - column:
+                  name: password
+                  value: test_password
