@@ -2,6 +2,8 @@ package com.example.dailyplanner.service;
 
 import com.example.dailyplanner.dto.TaskRequest;
 import com.example.dailyplanner.dto.TaskResponse;
+import com.example.dailyplanner.enums.SortDirection;
+import com.example.dailyplanner.enums.TaskSortField;
 import com.example.dailyplanner.exception.BadRequestException;
 import com.example.dailyplanner.exception.ResourceNotFoundException;
 import com.example.dailyplanner.mapper.TaskMapper;
@@ -53,7 +55,13 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
-    public Page<TaskResponse> getUserTasks(String userId, int page, int size, String sortBy, String sortDir) {
+    public Page<TaskResponse> getUserTasks(
+            String userId,
+            int page,
+            int size,
+            TaskSortField sortBy,
+            SortDirection sortDir
+    ) {
         validatePaging(page, size);
 
         if (!userRepository.existsById(userId)) {
@@ -78,8 +86,8 @@ public class TaskService {
             String deadlineTo,
             int page,
             int size,
-            String sortBy,
-            String sortDir
+            TaskSortField sortBy,
+            SortDirection sortDir
     ) {
         validatePaging(page, size);
 
@@ -137,10 +145,10 @@ public class TaskService {
         return TaskMapper.toResponse(taskRepository.save(task));
     }
 
-    private Pageable buildPageable(int page, int size, String sortBy, String sortDir) {
-        Sort sort = "desc".equalsIgnoreCase(sortDir)
-                ? Sort.by(sortBy).descending()
-                : Sort.by(sortBy).ascending();
+    private Pageable buildPageable(int page, int size, TaskSortField sortBy, SortDirection sortDir) {
+        Sort sort = sortDir == SortDirection.DESC
+                ? Sort.by(sortBy.getFieldName()).descending()
+                : Sort.by(sortBy.getFieldName()).ascending();
 
         return PageRequest.of(page, size, sort);
     }

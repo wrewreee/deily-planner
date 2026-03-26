@@ -2,6 +2,8 @@ package com.example.dailyplanner.controller;
 
 import com.example.dailyplanner.dto.TaskRequest;
 import com.example.dailyplanner.dto.TaskResponse;
+import com.example.dailyplanner.enums.SortDirection;
+import com.example.dailyplanner.enums.TaskSortField;
 import com.example.dailyplanner.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -77,11 +79,11 @@ public class TaskController {
             @Parameter(description = "Размер страницы", example = "10")
             @RequestParam(defaultValue = "10") int size,
 
-            @Parameter(description = "Поле сортировки", example = "deadline")
-            @RequestParam(defaultValue = "deadline") String sortBy,
+            @Parameter(description = "Поле сортировки", example = "DEADLINE")
+            @RequestParam(defaultValue = "DEADLINE") TaskSortField sortBy,
 
-            @Parameter(description = "Направление сортировки: asc или desc", example = "asc")
-            @RequestParam(defaultValue = "asc") String sortDir
+            @Parameter(description = "Направление сортировки: ASC или DESC", example = "ASC")
+            @RequestParam(defaultValue = "ASC") SortDirection sortDir
     ) {
         return taskService.getUserTasks(userId, page, size, sortBy, sortDir);
     }
@@ -120,11 +122,11 @@ public class TaskController {
             @Parameter(description = "Размер страницы", example = "10")
             @RequestParam(defaultValue = "10") int size,
 
-            @Parameter(description = "Поле сортировки", example = "priority")
-            @RequestParam(defaultValue = "deadline") String sortBy,
+            @Parameter(description = "Поле сортировки", example = "PRIORITY")
+            @RequestParam(defaultValue = "DEADLINE") TaskSortField sortBy,
 
-            @Parameter(description = "Направление сортировки: asc или desc", example = "desc")
-            @RequestParam(defaultValue = "asc") String sortDir
+            @Parameter(description = "Направление сортировки: ASC или DESC", example = "DESC")
+            @RequestParam(defaultValue = "ASC") SortDirection sortDir
     ) {
         return taskService.filterTasks(
                 userId, statusName, priority, title, deadlineFrom, deadlineTo, page, size, sortBy, sortDir
