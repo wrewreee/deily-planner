@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Создание задачи</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header class="app-header">
+    <div class="container">
+        <h1 class="app-title">Daily Planner</h1>
+        <nav class="app-nav">
+            <a th:href="@{/}">Главная</a>
+            <a th:href="@{/tasks-ui}">Задачи</a>
+            <a th:href="@{/tasks-ui/create}">Создать задачу</a>
+            <a th:href="@{/swagger-ui.html}">Swagger</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <h2 class="page-title">Создание задачи</h2>
+    <p class="subtle-text">Форма создания новой задачи.</p>
+
+    <section class="card">
+        <form th:action="@{/tasks-ui/create}" th:object="${taskRequest}" method="post">
+
+            <div class="form-group">
+                <label for="title">Название задачи</label>
+                <input type="text" id="title" th:field="*{title}" required>
+            </div>
+
+            <input type="hidden" th:field="*{userId}"/>
+
+            <div class="form-group">
+                <label for="statusName">Статус</label>
+                <select id="statusName" th:field="*{statusName}">
+                    <option value="NEW">NEW</option>
+                    <option value="IN_PROGRESS">IN_PROGRESS</option>
+                    <option value="DONE">DONE</option>
+                    <option value="OVERDUE">OVERDUE</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="deadline">Deadline (yyyy-MM-dd)</label>
+                <input type="text" id="deadline" th:field="*{deadline}" placeholder="2026-04-10">
+            </div>
+
+            <div class="form-group">
+                <label for="priority">Приоритет (1–10)</label>
+                <input type="number" id="priority" th:field="*{priority}" min="1" max="10">
+            </div>
+
+            <div class="actions-row">
+                <button type="submit">Создать задачу</button>
+                <a class="btn-secondary" th:href="@{/tasks-ui}">Назад к списку</a>
+            </div>
+        </form>
+    </section>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список задач</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header class="app-header">
+    <div class="container">
+        <h1 class="app-title">Daily Planner</h1>
+        <nav class="app-nav">
+            <a th:href="@{/}">Главная</a>
+            <a th:href="@{/tasks-ui}">Задачи</a>
+            <a th:href="@{/tasks-ui/create}">Создать задачу</a>
+            <a th:href="@{/swagger-ui.html}">Swagger</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <h2 class="page-title">Список задач</h2>
+    <p class="subtle-text">
+        Демонстрационный пользователь: <strong th:text="${userId}"></strong>
+    </p>
+
+    <div class="message-box" th:if="${message == 'created'}">
+        Задача успешно создана.
+    </div>
+
+    <div class="message-box" th:if="${message == 'status-updated'}">
+        Статус задачи успешно обновлён.
+    </div>
+
+    <div class="message-box" th:if="${message == 'deleted'}">
+        Задача успешно удалена.
+    </div>
+
+    <section class="card">
+        <form th:action="@{/tasks-ui}" method="get">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="title">Название</label>
+                    <input type="text" id="title" name="title" th:value="${title}">
+                </div>
+
+                <div class="form-group">
+                    <label for="statusName">Статус</label>
+                    <select id="statusName" name="statusName">
+                        <option value="">Все</option>
+                        <option value="NEW" th:selected="${statusName == 'NEW'}">NEW</option>
+                        <option value="IN_PROGRESS" th:selected="${statusName == 'IN_PROGRESS'}">IN_PROGRESS</option>
+                        <option value="DONE" th:selected="${statusName == 'DONE'}">DONE</option>
+                        <option value="OVERDUE" th:selected="${statusName == 'OVERDUE'}">OVERDUE</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="priority">Приоритет</label>
+                    <input type="number" id="priority" name="priority" min="1" max="10" th:value="${priority}">
+                </div>
+
+                <div class="form-group">
+                    <label for="deadlineFrom">Deadline от</label>
+                    <input type="text" id="deadlineFrom" name="deadlineFrom" placeholder="2026-04-01" th:value="${deadlineFrom}">
+                </div>
+
+                <div class="form-group">
+                    <label for="deadlineTo">Deadline до</label>
+                    <input type="text" id="deadlineTo" name="deadlineTo" placeholder="2026-04-30" th:value="${deadlineTo}">
+                </div>
+
+                <div class="form-group">
+                    <label for="sortBy">Сортировка</label>
+                    <select id="sortBy" name="sortBy">
+                        <option value="TITLE" th:selected="${sortBy.name() == 'TITLE'}">TITLE</option>
+                        <option value="DEADLINE" th:selected="${sortBy.name() == 'DEADLINE'}">DEADLINE</option>
+                        <option value="PRIORITY" th:selected="${sortBy.name() == 'PRIORITY'}">PRIORITY</option>
+                        <option value="CREATED_AT" th:selected="${sortBy.name() == 'CREATED_AT'}">CREATED_AT</option>
+                        <option value="UPDATED_AT" th:selected="${sortBy.name() == 'UPDATED_AT'}">UPDATED_AT</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="sortDir">Направление</label>
+                    <select id="sortDir" name="sortDir">
+                        <option value="ASC" th:selected="${sortDir.name() == 'ASC'}">ASC</option>
+                        <option value="DESC" th:selected="${sortDir.name() == 'DESC'}">DESC</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="actions-row">
+                <button type="submit">Применить фильтры</button>
+                <a class="btn-secondary" th:href="@{/tasks-ui}">Сбросить фильтры</a>
+            </div>
+        </form>
+    </section>
+
+    <section class="card" th:if="${tasks != null and !tasks.isEmpty()}">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Статус</th>
+                <th>Приоритет</th>
+                <th>User ID</th>
+                <th>Изменить статус</th>
+                <th>Удаление</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="task : ${tasks}">
+                <td th:text="${task.id}"></td>
+                <td th:text="${task.title}"></td>
+                <td th:text="${task.status}"></td>
+                <td th:text="${task.priority}"></td>
+                <td th:text="${task.userId}"></td>
+                <td>
+                    <form class="inline-form"
+                          th:action="@{/tasks-ui/{taskId}/status(taskId=${task.id})}"
+                          method="post">
+                        <input type="hidden" name="statusName" th:value="${statusName}">
+                        <input type="hidden" name="priority" th:value="${priority}">
+                        <input type="hidden" name="title" th:value="${title}">
+                        <input type="hidden" name="deadlineFrom" th:value="${deadlineFrom}">
+                        <input type="hidden" name="deadlineTo" th:value="${deadlineTo}">
+                        <input type="hidden" name="page" th:value="${taskPage.number}">
+                        <input type="hidden" name="size" th:value="${taskPage.size}">
+                        <input type="hidden" name="sortBy" th:value="${sortBy}">
+                        <input type="hidden" name="sortDir" th:value="${sortDir}">
+
+                        <select name="status">
+                            <option value="NEW" th:selected="${task.status == 'NEW'}">NEW</option>
+                            <option value="IN_PROGRESS" th:selected="${task.status == 'IN_PROGRESS'}">IN_PROGRESS</option>
+                            <option value="DONE" th:selected="${task.status == 'DONE'}">DONE</option>
+                            <option value="OVERDUE" th:selected="${task.status == 'OVERDUE'}">OVERDUE</option>
+                        </select>
+
+                        <button type="submit">Сохранить</button>
+                    </form>
+                </td>
+                <td>
+                    <form class="inline-form"
+                          th:action="@{/tasks-ui/{taskId}/delete(taskId=${task.id})}"
+                          method="post">
+                        <input type="hidden" name="statusName" th:value="${statusName}">
+                        <input type="hidden" name="priority" th:value="${priority}">
+                        <input type="hidden" name="title" th:value="${title}">
+                        <input type="hidden" name="deadlineFrom" th:value="${deadlineFrom}">
+                        <input type="hidden" name="deadlineTo" th:value="${deadlineTo}">
+                        <input type="hidden" name="page" th:value="${taskPage.number}">
+                        <input type="hidden" name="size" th:value="${taskPage.size}">
+                        <input type="hidden" name="sortBy" th:value="${sortBy}">
+                        <input type="hidden" name="sortDir" th:value="${sortDir}">
+
+                        <button class="btn-danger" type="submit" onclick="return confirm('Удалить задачу?');">
+                            Удалить
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <a class="btn-secondary"
+               th:if="${!taskPage.first}"
+               th:href="@{/tasks-ui(
+                statusName=${statusName},
+                priority=${priority},
+                title=${title},
+                deadlineFrom=${deadlineFrom},
+                deadlineTo=${deadlineTo},
+                page=${taskPage.number - 1},
+                size=${taskPage.size},
+                sortBy=${sortBy},
+                sortDir=${sortDir}
+           )}">
+                Назад
+            </a>
+
+            <span>
+                Страница <span th:text="${taskPage.number + 1}"></span>
+                из <span th:text="${taskPage.totalPages == 0 ? 1 : taskPage.totalPages}"></span>
+            </span>
+
+            <a class="btn-secondary"
+               th:if="${!taskPage.last}"
+               th:href="@{/tasks-ui(
+                statusName=${statusName},
+                priority=${priority},
+                title=${title},
+                deadlineFrom=${deadlineFrom},
+                deadlineTo=${deadlineTo},
+                page=${taskPage.number + 1},
+                size=${taskPage.size},
+                sortBy=${sortBy},
+                sortDir=${sortDir}
+           )}">
+                Вперёд
+            </a>
+        </div>
+    </section>
+
+    <section class="card" th:if="${tasks == null or tasks.isEmpty()}">
+        <p class="empty-message">По заданным параметрам задачи не найдены.</p>
+    </section>
+
+</main>
+
+</body>
+</html>

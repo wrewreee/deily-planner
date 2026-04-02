@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Daily Planner</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header class="app-header">
+    <div class="container">
+        <h1 class="app-title">Daily Planner</h1>
+        <nav class="app-nav">
+            <a th:href="@{/}">Главная</a>
+            <a th:href="@{/tasks-ui}">Задачи</a>
+            <a th:href="@{/tasks-ui/create}">Создать задачу</a>
+            <a th:href="@{/swagger-ui.html}">Swagger</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <h2 class="page-title">Интеллектуальный ежедневник</h2>
+<!--    <p class="subtle-text">-->
+<!--        Веб-интерфейс дипломного проекта для управления задачами, фильтрации, изменения статусов и последующего расширения интеллектуальными функциями анализа.-->
+<!--    </p>-->
+
+    <div class="home-grid">
+        <section class="card">
+            <span class="tag">Tasks UI</span>
+            <h3 class="home-card-title">Список задач</h3>
+            <p>Просмотр задач, фильтрация, сортировка, пагинация, изменение статуса и удаление.</p>
+            <div class="actions-row">
+                <a class="btn-link" th:href="@{/tasks-ui}">Открыть список</a>
+            </div>
+        </section>
+
+        <section class="card">
+            <span class="tag">Create</span>
+            <h3 class="home-card-title">Создание задачи</h3>
+            <p>Форма добавления новой задачи.</p>
+            <div class="actions-row">
+                <a class="btn-link" th:href="@{/tasks-ui/create}">Создать задачу</a>
+            </div>
+        </section>
+
+        <section class="card">
+            <span class="tag">API</span>
+            <h3 class="home-card-title">Документация API</h3>
+            <p>Интерактивная Swagger-документация для тестирования REST API и проверки backend-логики.</p>
+            <div class="actions-row">
+                <a class="btn-link" th:href="@{/swagger-ui.html}">Открыть Swagger</a>
+            </div>
+        </section>
+    </div>
+</main>
+
+</body>
+</html>
