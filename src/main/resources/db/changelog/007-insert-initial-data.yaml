@@ -9,7 +9,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  valueComputed: RANDOM_UUID()
+                  value: b3149c21-a07b-450f-9deb-2166ad1d6a68
               - column:
                   name: username
                   value: test_user

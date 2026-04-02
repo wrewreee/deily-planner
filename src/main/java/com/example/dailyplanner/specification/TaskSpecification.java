@@ -4,12 +4,13 @@ import com.example.dailyplanner.model.Task;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class TaskSpecification {
 
-    public static Specification<Task> hasUserId(String userId) {
+    public static Specification<Task> hasUserId(UUID userId) {
         return (root, query, cb) ->
-                userId == null || userId.isBlank()
+                userId == null
                         ? null
                         : cb.equal(root.get("user").get("id"), userId);
     }
