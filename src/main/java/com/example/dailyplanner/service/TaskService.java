@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +36,9 @@ public class TaskService {
     private final TaskStatusRepository statusRepository;
 
     public TaskResponse createTask(TaskRequest request) {
-        User user = userRepository.findById(request.getUserId())
+        UUID userId = parseUuid(request.getUserId(), "userId");
+
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + request.getUserId()));
 
         TaskStatus status = statusRepository.findByName(request.getStatusName())
@@ -64,13 +67,15 @@ public class TaskService {
     ) {
         validatePaging(page, size);
 
-        if (!userRepository.existsById(userId)) {
+        UUID parsedUserId = parseUuid(userId, "userId");
+
+        if (!userRepository.existsById(parsedUserId)) {
             throw new ResourceNotFoundException("User not found: " + userId);
         }
 
         Pageable pageable = buildPageable(page, size, sortBy, sortDir);
 
-        Specification<Task> specification = TaskSpecification.hasUserId(userId);
+        Specification<Task> specification = TaskSpecification.hasUserId(parsedUserId);
 
         return taskRepository.findAll(specification, pageable)
                 .map(TaskMapper::toResponse);
@@ -91,13 +96,14 @@ public class TaskService {
     ) {
         validatePaging(page, size);
 
+        UUID parsedUserId = userId == null || userId.isBlank() ? null : parseUuid(userId, "userId");
         LocalDate parsedDeadlineFrom = parseDate(deadlineFrom, "deadlineFrom");
         LocalDate parsedDeadlineTo = parseDate(deadlineTo, "deadlineTo");
 
         Pageable pageable = buildPageable(page, size, sortBy, sortDir);
 
         Specification<Task> specification = Specification
-                .where(TaskSpecification.hasUserId(userId))
+                .where(TaskSpecification.hasUserId(parsedUserId))
                 .and(TaskSpecification.hasStatusName(statusName))
                 .and(TaskSpecification.hasPriority(priority))
                 .and(TaskSpecification.titleContains(title))
@@ -113,7 +119,9 @@ public class TaskService {
             throw new BadRequestException("Title must not be blank");
         }
 
-        Task task = taskRepository.findById(taskId)
+        UUID parsedTaskId = parseUuid(taskId, "taskId");
+
+        Task task = taskRepository.findById(parsedTaskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found: " + taskId));
 
         task.setTitle(title);
@@ -122,11 +130,13 @@ public class TaskService {
     }
 
     public void deleteTask(String taskId) {
-        if (!taskRepository.existsById(taskId)) {
+        UUID parsedTaskId = parseUuid(taskId, "taskId");
+
+        if (!taskRepository.existsById(parsedTaskId)) {
             throw new ResourceNotFoundException("Task not found: " + taskId);
         }
 
-        taskRepository.deleteById(taskId);
+        taskRepository.deleteById(parsedTaskId);
     }
 
     public TaskResponse changeStatus(String taskId, String statusName) {
@@ -134,7 +144,9 @@ public class TaskService {
             throw new BadRequestException("Status name must not be blank");
         }
 
-        Task task = taskRepository.findById(taskId)
+        UUID parsedTaskId = parseUuid(taskId, "taskId");
+
+        Task task = taskRepository.findById(parsedTaskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found: " + taskId));
 
         TaskStatus status = statusRepository.findByName(statusName)
@@ -172,6 +184,14 @@ public class TaskService {
             return LocalDate.parse(date);
         } catch (Exception ex) {
             throw new BadRequestException("Invalid date format for " + fieldName + ". Expected format: yyyy-MM-dd");
+        }
+    }
+
+    private UUID parseUuid(String value, String fieldName) {
+        try {
+            return UUID.fromString(value);
+        } catch (Exception ex) {
+            throw new BadRequestException("Invalid UUID format for " + fieldName);
         }
     }
 }

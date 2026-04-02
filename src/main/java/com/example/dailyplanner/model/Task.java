@@ -8,6 +8,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -19,7 +20,7 @@ public class Task {
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @Column(nullable = false)
     private String title;

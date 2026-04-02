@@ -9,7 +9,6 @@ databaseChangeLog:
               - column:
                   name: id
                   type: UUID
-                  defaultValueComputed: RANDOM_UUID()
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -30,16 +29,39 @@ databaseChangeLog:
         - insert:
             tableName: task_status
             columns:
-              - column: { name: name, value: NEW }
+              - column:
+                  name: id
+                  value: 1ed9615a-e783-4a56-83b3-7ab317882267
+              - column:
+                  name: name
+                  value: NEW
+
         - insert:
             tableName: task_status
             columns:
-              - column: { name: name, value: IN_PROGRESS }
+              - column:
+                  name: id
+                  value: df33a1cd-e754-4660-8c34-631131f08192
+              - column:
+                  name: name
+                  value: IN_PROGRESS
+
         - insert:
             tableName: task_status
             columns:
-              - column: { name: name, value: DONE }
+              - column:
+                  name: id
+                  value: 1166012f-ec52-4367-bc09-f0edc8b5cff7
+              - column:
+                  name: name
+                  value: DONE
+
         - insert:
             tableName: task_status
             columns:
-              - column: { name: name, value: OVERDUE }
+              - column:
+                  name: id
+                  value: 8d0e8a55-cbe2-406e-b0fa-299fa6bb3e93
+              - column:
+                  name: name
+                  value: OVERDUE

@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -44,20 +45,25 @@ class TaskServiceTest {
     private Task task;
     private TaskRequest taskRequest;
 
+    private final UUID userId = UUID.fromString("11111111-1111-1111-1111-111111111111");
+    private final UUID taskId = UUID.fromString("22222222-2222-2222-2222-222222222222");
+    private final UUID statusId = UUID.fromString("33333333-3333-3333-3333-333333333333");
+    private final UUID newStatusId = UUID.fromString("44444444-4444-4444-4444-444444444444");
+
     @BeforeEach
     void setUp() {
         user = new User();
-        user.setId("user-1");
+        user.setId(userId);
         user.setUsername("test_user");
         user.setEmail("test@example.com");
         user.setPassword("password");
 
         status = new TaskStatus();
-        status.setId("status-1");
+        status.setId(statusId);
         status.setName("NEW");
 
         task = new Task();
-        task.setId("task-1");
+        task.setId(taskId);
         task.setTitle("Подготовить диплом");
         task.setDeadline(LocalDate.of(2026, 3, 20));
         task.setPriority(5);
@@ -66,7 +72,7 @@ class TaskServiceTest {
 
         taskRequest = new TaskRequest();
         taskRequest.setTitle("Подготовить диплом");
-        taskRequest.setUserId("user-1");
+        taskRequest.setUserId(userId.toString());
         taskRequest.setStatusName("NEW");
         taskRequest.setDeadline("2026-03-20");
         taskRequest.setPriority(5);
@@ -74,17 +80,17 @@ class TaskServiceTest {
 
     @Test
     void createTask_success() {
-        when(userRepository.findById("user-1")).thenReturn(Optional.of(user));
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(statusRepository.findByName("NEW")).thenReturn(Optional.of(status));
         when(taskRepository.save(any(Task.class))).thenReturn(task);
 
         TaskResponse response = taskService.createTask(taskRequest);
 
         assertNotNull(response);
-        assertEquals("task-1", response.getId());
+        assertEquals(taskId.toString(), response.getId());
         assertEquals("Подготовить диплом", response.getTitle());
         assertEquals("NEW", response.getStatus());
-        assertEquals("user-1", response.getUserId());
+        assertEquals(userId.toString(), response.getUserId());
         assertEquals(5, response.getPriority());
 
         ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
@@ -100,14 +106,14 @@ class TaskServiceTest {
 
     @Test
     void createTask_userNotFound() {
-        when(userRepository.findById("user-1")).thenReturn(Optional.empty());
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         ResourceNotFoundException exception = assertThrows(
                 ResourceNotFoundException.class,
                 () -> taskService.createTask(taskRequest)
         );
 
-        assertEquals("User not found: user-1", exception.getMessage());
+        assertEquals("User not found: " + userId, exception.getMessage());
 
         verify(taskRepository, never()).save(any(Task.class));
         verify(statusRepository, never()).findByName(anyString());
@@ -117,35 +123,35 @@ class TaskServiceTest {
     void updateTaskTitle_blankTitle() {
         BadRequestException exception = assertThrows(
                 BadRequestException.class,
-                () -> taskService.updateTaskTitle("task-1", "   ")
+                () -> taskService.updateTaskTitle(taskId.toString(), "   ")
         );
 
         assertEquals("Title must not be blank", exception.getMessage());
 
-        verify(taskRepository, never()).findById(anyString());
+        verify(taskRepository, never()).findById(any());
         verify(taskRepository, never()).save(any(Task.class));
     }
 
     @Test
     void changeStatus_success() {
         TaskStatus newStatus = new TaskStatus();
-        newStatus.setId("status-2");
+        newStatus.setId(newStatusId);
         newStatus.setName("IN_PROGRESS");
 
-        when(taskRepository.findById("task-1")).thenReturn(Optional.of(task));
+        when(taskRepository.findById(taskId)).thenReturn(Optional.of(task));
         when(statusRepository.findByName("IN_PROGRESS")).thenReturn(Optional.of(newStatus));
         when(taskRepository.save(any(Task.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        TaskResponse response = taskService.changeStatus("task-1", "IN_PROGRESS");
+        TaskResponse response = taskService.changeStatus(taskId.toString(), "IN_PROGRESS");
 
         assertNotNull(response);
-        assertEquals("task-1", response.getId());
+        assertEquals(taskId.toString(), response.getId());
         assertEquals("IN_PROGRESS", response.getStatus());
         assertEquals("Подготовить диплом", response.getTitle());
 
         assertEquals("IN_PROGRESS", task.getStatus().getName());
 
-        verify(taskRepository).findById("task-1");
+        verify(taskRepository).findById(taskId);
         verify(statusRepository).findByName("IN_PROGRESS");
         verify(taskRepository).save(task);
     }
