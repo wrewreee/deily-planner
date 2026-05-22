@@ -14,6 +14,7 @@
             <a th:href="@{/}">Главная</a>
             <a th:href="@{/tasks-ui}">Задачи</a>
             <a th:href="@{/tasks-ui/create}">Создать задачу</a>
+            <a th:href="@{/ai-dashboard}">AI Dashboard</a>
             <a th:href="@{/swagger-ui.html}">Swagger</a>
         </nav>
     </div>
@@ -21,9 +22,6 @@
 
 <main class="container">
     <h2 class="page-title">Интеллектуальный ежедневник</h2>
-<!--    <p class="subtle-text">-->
-<!--        Веб-интерфейс дипломного проекта для управления задачами, фильтрации, изменения статусов и последующего расширения интеллектуальными функциями анализа.-->
-<!--    </p>-->
 
     <div class="home-grid">
         <section class="card">
@@ -45,6 +43,15 @@
         </section>
 
         <section class="card">
+            <span class="tag">AI</span>
+            <h3 class="home-card-title">Интеллектуальный анализ</h3>
+            <p>Рекомендации по приоритетам задач и выявление перегруженных дней на основе текущего состояния расписания.</p>
+            <div class="actions-row">
+                <a class="btn-link" th:href="@{/ai-dashboard}">Открыть AI Dashboard</a>
+            </div>
+        </section>
+
+        <section class="card">
             <span class="tag">API</span>
             <h3 class="home-card-title">Документация API</h3>
             <p>Интерактивная Swagger-документация для тестирования REST API и проверки backend-логики.</p>
@@ -52,6 +59,7 @@
                 <a class="btn-link" th:href="@{/swagger-ui.html}">Открыть Swagger</a>
             </div>
         </section>
+
     </div>
 </main>
 

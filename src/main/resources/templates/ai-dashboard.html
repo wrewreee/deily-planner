@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header class="app-header">
+    <div class="container">
+        <h1 class="app-title">Daily Planner</h1>
+        <nav class="app-nav">
+            <a th:href="@{/}">Главная</a>
+            <a th:href="@{/tasks-ui}">Задачи</a>
+            <a th:href="@{/tasks-ui/create}">Создать задачу</a>
+            <a th:href="@{/ai-dashboard}">AI Dashboard</a>
+            <a th:href="@{/swagger-ui.html}">Swagger</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <h2 class="page-title">AI Dashboard</h2>
+    <p class="subtle-text" th:text="${analysis.summary}"></p>
+
+    <section class="card">
+        <h3>Общая аналитика</h3>
+        <p><strong>User ID:</strong> <span th:text="${analysis.userId}"></span></p>
+        <p><strong>Дата анализа:</strong> <span th:text="${analysis.generatedAt}"></span></p>
+        <p><strong>Всего задач:</strong> <span th:text="${analysis.totalTasks}"></span></p>
+        <p><strong>Активных задач:</strong> <span th:text="${analysis.activeTasks}"></span></p>
+    </section>
+
+    <section class="card">
+        <h3>Рекомендации по приоритетам</h3>
+
+        <div th:if="${analysis.recommendations != null and !analysis.recommendations.isEmpty()}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Задача</th>
+                    <th>Статус</th>
+                    <th>Текущий приоритет</th>
+                    <th>Рекомендуемый приоритет</th>
+                    <th>Deadline</th>
+                    <th>Причина</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${analysis.recommendations}">
+                    <td th:text="${item.title}"></td>
+                    <td th:text="${item.currentStatus}"></td>
+                    <td th:text="${item.currentPriority}"></td>
+                    <td th:text="${item.recommendedPriority}"></td>
+                    <td th:text="${item.deadline}"></td>
+                    <td th:text="${item.reason}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p class="empty-message" th:if="${analysis.recommendations == null or analysis.recommendations.isEmpty()}">
+            Активные задачи для анализа не найдены.
+        </p>
+    </section>
+
+    <section class="card">
+        <h3>Перегруженные дни</h3>
+
+        <div th:if="${analysis.overloadedDays != null and !analysis.overloadedDays.isEmpty()}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Количество задач</th>
+                    <th>Суммарное время (мин)</th>
+                    <th>Уровень нагрузки</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="day : ${analysis.overloadedDays}">
+                    <td th:text="${day.date}"></td>
+                    <td th:text="${day.taskCount}"></td>
+                    <td th:text="${day.totalEstimatedMinutes}"></td>
+                    <td th:text="${day.loadLevel}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p class="empty-message" th:if="${analysis.overloadedDays == null or analysis.overloadedDays.isEmpty()}">
+            Перегруженные дни не обнаружены.
+        </p>
+    </section>
+</main>
+
+</body>
+</html>
